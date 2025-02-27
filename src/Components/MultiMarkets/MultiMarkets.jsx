@@ -1321,7 +1321,7 @@ const MultiMarkets = () => {
             <h2 className="">Open Bets</h2>
             </div>
             
-            {/* SVG Icons for + and - */}
+           
             <span className="px-2">
             {BetOpen ? (
               
