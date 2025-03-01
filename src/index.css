@@ -36,13 +36,23 @@
 
 .marquee {
     display: flex;
-    animation: marquee 40s linear infinite;
+    animation: marquee 50s linear infinite;
     min-width: 300%;
-    
 }
 
-
+@media (max-width: 480px) {
+    .marquee {
+        min-width: max-content;
+        animation-duration: 50s; 
+    }
+}
 
   .marquee:hover {
     animation-play-state: paused;
-  }  
+  } 
+
+  
+
+
+ 
+   
