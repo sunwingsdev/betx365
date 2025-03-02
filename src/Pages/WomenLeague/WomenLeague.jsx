@@ -45,7 +45,7 @@ const WommenLeague = () => {
       </div>
 
       <div className="w-full lg:w-[50%] ">
-        <Marquee/>
+        {/* <Marquee/> */}
         <WomenLeagueHeader/>
 <WomenLeagueTable/>
         

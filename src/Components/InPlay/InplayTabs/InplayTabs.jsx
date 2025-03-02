@@ -18,6 +18,7 @@ const InplayTabs = () => {
                          <Link
                          key={tab}
                          to="/login"
+                        // to='/result'
                          className="w-full lg:w-[20%] py-1 px-2 lg:px-0 text-customWhite border-r rounded-r-md border-customWhite lg:border lg:border-customBlack lg:text-customBlack lg:rounded-sm lg:bg-customWhite bg-smallDeviceTabColor lg:hidden text-center"
                        >
                          {tab}

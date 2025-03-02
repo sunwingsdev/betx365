@@ -27,9 +27,13 @@ const MenuHeader = () => {
     { label: "Cricket", link: "/cricket" },
     { label: "Soccer", link: "/soccer" },
     { label: "Tennis", link: "/tennis" },
-    { label: "Result", link: "/result" },
+    { label: "Result", 
+      // link: "/result" 
+    },
     { label: "Casino", link: "/casino" },
-    { label: "Women's Premier League", link: "/womenleague" },
+    { label: "Women's Premier League",
+      //  link: "/womenleague"
+       },
   ];
   const [showSecondButton, setShowSecondButton] = useState(false);
   const [showSecondButtonTwo, setShowSecondButtonTwo] = useState(false);
@@ -89,6 +93,11 @@ const MenuHeader = () => {
         <ul className="flex flex-row items-center  text-xs ">
           {menuItems.map((item, index) => (
             <li
+            onClick={() => {
+              if (index === 6 || index === 8) {
+                setOpenModal(true);
+              }
+            }}
               className={`border-customBlack  border-r text-customBlack border-opacity-20 font-bold ${
                 [3, 4, 5].includes(index) ? "relative" : "null"
               }
@@ -114,14 +123,14 @@ const MenuHeader = () => {
                 {item.label}
               </Link>
               {[3, 4, 5].includes(index) && (
-                <div className="absolute top-0 right-0 flex z-50 items-center ">
+                <div className="absolute top-0 right-0 flex z-30 items-center ">
                   {/* Live Icon with Animation */}
-                  <span className="bg-customWhite font-bold text-[8px] leading-[10px] px-1 text-liveRedColor animate-pulse rounded-sm">
+                  <span className="bg-customWhite font-bold text-[8px] leading-[10px] px-1 text-liveRedColor animate-pulse  rounded-sm">
                     Live
                   </span>
 
                   {/* Live Score (Attached) */}
-                  <span className="bg-loginRedColor font-bold text-[8px] leading-[10px] px-1 text-customWhite rounded-sm">
+                  <span className="bg-loginRedColor font-bold text-[8px] leading-[10px] px-1 text-customWhite  rounded-sm">
                     6
                   </span>
                 </div>
@@ -137,8 +146,8 @@ const MenuHeader = () => {
           <div
             className="relative cursor-pointer text-left"
             // login page design
-            // onClick={() => setOpenModal(true)}
-            onClick={() => setIsChecked(!isChecked)}
+            onClick={() => setOpenModal(true)}
+            // onClick={() => setIsChecked(!isChecked)}
           >
             <button
               className={`hover:underline px-8 border-t-2 border-topGreenBorder  py-1 text-textYellowColor font-medium text-sm ${
@@ -177,7 +186,7 @@ const MenuHeader = () => {
           <div
             ref={settingRef}
             className="relative cursor-pointer"
-            onClick={() => setSettingOpen((prev) => !prev)}
+            // onClick={() => setSettingOpen((prev) => !prev)}
           >
             <p className="hover:underline font-semibold text-sm">Setting</p>
             <svg
