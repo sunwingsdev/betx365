@@ -43,8 +43,8 @@ const SportsHeader = ({allTabs}) => {
       label: "Result",
       icon: "M8 21l10-10m-6-6l6 6M21 3l-3 3", // Cricket Ball icon (same as "Cricket")
       bgColor: "",
-      // link: "/login",
-      link: "/result",
+      link: "/login",
+      // link: "/result",
     },
     {
       label: "Women's",

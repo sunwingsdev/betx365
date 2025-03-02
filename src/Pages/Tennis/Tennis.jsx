@@ -107,7 +107,7 @@ const Tennis = () => {
           </div>
           
             <div className="w-full overflow-y-auto h-[500px] overflow-x-hidden">
-            <Marquee />
+            {/* <Marquee /> */}
               <div className=" w-full ">
                 <img
                   src={banner}
