@@ -23,6 +23,7 @@ module.exports = {
       colors:
       {
         marqueeTextColor:'#6AC2FF',
+        topHeaderColor:'#005d13',
         customWhite: "#ffffff", // Light white
         customBlack: "#1a1a1a", 
         liveRedColor:'#BB1C00',
