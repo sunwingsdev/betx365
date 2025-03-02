@@ -8,7 +8,7 @@ const Home = () => {
   return (
     <div className="bg-inPlayBgColor">
       <div className=" mx-auto  lg:max-w-4xl">
-        <Marquee />
+        {/* <Marquee /> */}
 
         <ImageSlider />
 

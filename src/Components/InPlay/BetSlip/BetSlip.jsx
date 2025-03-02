@@ -71,7 +71,7 @@ const BetSlip = () => {
           <div className="w-full bg-customWhite  h-[300px]  shadow-2xl"></div>
         )}
       </div>
-      <div
+      {/* <div
         className="flex items-center justify-between w-full text-customWhite  bg-inPlayTabColor cursor-pointer"
         onClick={() => setBetOpen(!BetOpen)}
       >
@@ -137,7 +137,7 @@ const BetSlip = () => {
             ))}
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

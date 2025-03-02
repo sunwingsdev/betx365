@@ -29,18 +29,13 @@ const Header = () => {
       bgColor: "",
       link: "/multimarket",
     },
-    // login Page design
-    // {
-    //   label: "Account",
-    //   icon: "M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H5z",
-    //   bgColor: "",
-    //   link: "/login",
-    // },
+    
     {
       label: "Account",
       icon: "M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H5z",
       bgColor: "",
-      link: "/myaccountphone",
+      // link: "/myaccountphone",
+      link: "/login",
     },
   ];
   const location = useLocation();

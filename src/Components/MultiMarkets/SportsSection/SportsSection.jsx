@@ -251,7 +251,7 @@ console.log("Tennis tab data:", tabData["Tennis"]);
         </div>
         {isOpen ? (
           <div className="w-full overflow-y-auto h-[500px] overflow-x-hidden">
-            <Marquee />
+            {/* <Marquee /> */}
             <ImageSlider/>
             <div className="relative bg-commonYellowColor">
               <h3 className="px-2 py-10  font-bold w-full text-customBlack bg-commonYellowColor">

@@ -7,7 +7,7 @@ const InPlay = () => {
   return (
     <div className="lg:p-4 bg-inPlayBgColor lg:flex flex-row justify-between gap-2 mx-auto lg:max-w-[1420px]  ">
       <div className="lg:w-3/4 w-full max-w-3xl  ">
-        <Marquee />
+        {/* <Marquee /> */}
 
         <InplayTabs />
       </div>

@@ -4,7 +4,7 @@ import { CiDollar } from "react-icons/ci";
 import { IoReload } from "react-icons/io5";
 import { HiOutlineArrowRightStartOnRectangle } from "react-icons/hi2";
 import { IoSettingsSharp } from "react-icons/io5";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const TopHeader = ({ settingOpen, setSettingOpen }) => {
     const events = ["React Meetup", "JS Conference", "CSS Workshop", "Next.js Summit"];
@@ -22,6 +22,17 @@ const TopHeader = ({ settingOpen, setSettingOpen }) => {
     
     const [searchText, setSearchText] = useState("");
         const [myAccountOpen, setMyAccountOpen] = useState(false);
+        const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleChange = (e, setter) => {
+    setter(e.target.value);
+  };
+
+  const handelLogin = () => {
+    console.log("Logging in with:", { username, password });
+  };
         
           const accountRef = useRef(null);
             const modalRef = useRef(null);
@@ -57,7 +68,12 @@ const TopHeader = ({ settingOpen, setSettingOpen }) => {
       const navigate = useNavigate();
     return (
         <div className="bg-topHeaderColor py-3 px-2   flex flex-row gap-2 items-center justify-center lg:justify-between ">
-        <div className="lg:flex hidden flex-row items-center gap-2">
+        <div className="flex flex-row items-center gap-2">
+          {/* <img
+            src={betxLogo}
+            alt=""
+            className="w-full  hidden lg:block max-w-[100px] lg:max-w-[150px]"
+          /> */}
           <img
             src={betxLogo}
             alt=""
@@ -94,12 +110,12 @@ const TopHeader = ({ settingOpen, setSettingOpen }) => {
 
       {/* No Events Found Message */}
       {searchText && filteredEvents.length === 0 && (
-        <p className="text-xs absolute  left-0 w-full   mt-6  bg-customWhite px-2 py-1 rounded-b-md text-customBlack">No events found matching...</p>
+        <p className="text-xs absolute  left-0 w-full  shadow-lg    mt-6  bg-customWhite px-2 py-1 rounded-b-md text-customBlack z-50">No events found matching...</p>
       )}
     </div>
         </div>
         {/* login page design */}
-        {/* <div className=" hidden lg:flex  flex-row   gap-2 items-center ">
+        <div className=" hidden lg:flex  flex-row   gap-2 items-center ">
           <div>
             <input
               type="text"
@@ -212,8 +228,10 @@ const TopHeader = ({ settingOpen, setSettingOpen }) => {
               </span>
             </Link>
           </div>
-        </div> */}
-        <div className="flex flex-row items-center justify-center  gap-1 lg:gap-2 relative">
+        </div>
+
+
+        {/* <div className="flex flex-row items-center justify-center  gap-1 lg:gap-2 relative">
           <div className="lg:hidden flex flex-row   text-customWhite bg-signUpColor  rounded-[4px]  p-1  items-center ">
             <span>
               <CiDollar className="w-5 h-auto stroke-1" />
@@ -311,7 +329,7 @@ const TopHeader = ({ settingOpen, setSettingOpen }) => {
               </div>
             </div>
           )}
-        </div>
+        </div> */}
       </div>
     );
 };

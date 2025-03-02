@@ -9,7 +9,7 @@ const Sports = () => {
   const allTabs = ["by Time", "by Competition"];
   return (
     <div className="lg:hidden">
-      <Marquee/>
+      {/* <Marquee/> */}
       <SportsSlider/>
 
      <SportsHeader allTabs={allTabs} />
