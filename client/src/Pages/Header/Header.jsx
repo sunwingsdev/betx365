@@ -44,7 +44,7 @@ const Header = () => {
     <div className="relative">
       <MenuHeader/>
       {/* bottom navbar for small screen */}
-      <div className="fixed bottom-0 w-full z-50  lg:hidden">
+      {/* <div className="fixed bottom-0 w-full z-50  lg:hidden">
         <div className="grid grid-cols-5   justify-items-center bg-footer-gradient text-customWhite text-xs  whitespace-nowrap font-medium">
           {buttons.map((btn, index) => (
             <Link
@@ -75,7 +75,7 @@ const Header = () => {
             </Link>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
