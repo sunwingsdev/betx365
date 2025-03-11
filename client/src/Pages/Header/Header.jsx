@@ -1,9 +1,10 @@
-import React from "react";
-import { Link, useLocation} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import MenuHeader from "../../Components/Header/MenuHeader";
+import { useSelector } from "react-redux";
 // import gameLogo from "../../assets/entrance.svg";
 
 const Header = () => {
+  const { user } = useSelector((state) => state.auth);
   const buttons = [
     {
       label: "Home",
@@ -29,25 +30,26 @@ const Header = () => {
       bgColor: "",
       link: "/multimarket",
     },
-    
+
     {
       label: "Account",
       icon: "M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H5z",
       bgColor: "",
-      // link: "/myaccountphone",
-      link: "/login",
+      link: user ? "/myaccountphone" : "/login",
     },
   ];
   const location = useLocation();
 
   return (
     <div className="relative">
-      <MenuHeader/>
+      <MenuHeader />
       {/* bottom navbar for small screen */}
-      {/* <div className="fixed bottom-0 w-full z-50  lg:hidden">
-        <div className="grid grid-cols-5   justify-items-center bg-footer-gradient text-customWhite text-xs  whitespace-nowrap font-medium">
+
+      <div className="fixed bottom-0 w-full z-50  lg:hidden">
+        <div className="grid grid-cols-5 justify-items-center bg-footer-gradient text-customWhite text-xs  whitespace-nowrap font-medium">
           {buttons.map((btn, index) => (
             <Link
+              key={index}
               to={btn.link}
               className={`px-1 py-1 ${
                 location.pathname === btn.link
@@ -75,7 +77,7 @@ const Header = () => {
             </Link>
           ))}
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

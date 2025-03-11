@@ -46,19 +46,17 @@ const MyAccount = () => {
       message: "You have no bets in this time period.",
     },
   ];
- 
 
-  
   const [activeTab, setActiveTab] = useState(1);
   const [betsActiveTab, setBetsActiveTab] = useState(1);
   const [selectedOption, setSelectedOption] = useState("All");
   const [historySelectedOption, setHistorySelectedOption] = useState("Settled");
   const [profitSelectedOption, setProfileSelectedOption] = useState("All");
-  
+
   useEffect(() => {
-    // Meta viewport 
+    // Meta viewport
     const metaViewport = document.querySelector("meta[name='viewport']");
-    
+
     if (metaViewport) {
       const originalContent = metaViewport.getAttribute("content");
       metaViewport.setAttribute("content", "width=1200");
@@ -84,9 +82,6 @@ const MyAccount = () => {
 
   const location = useLocation();
 
- 
-
-  
   useEffect(() => {
     const hash = location.hash.replace("#", "");
     if (hash.includes("-")) {
@@ -101,7 +96,7 @@ const MyAccount = () => {
   return (
     <div className="bg-inPlayBgColor flex flex-row gap-x-4 px-4">
       <div className="w-[30%]  h-min bg-customWhite shadow-lg ">
-        <div className="flex flex-row justify-between   bg-logoutBlueColor ">
+        <div className="flex flex-row justify-between bg-logoutBlueColor">
           <span className="  ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +127,7 @@ const MyAccount = () => {
                 }`}
                 onClick={() => {
                   setActiveTab(tab.id);
-                  window.location.hash = tab.id; 
+                  window.location.hash = tab.id;
                 }}
               >
                 {tab.label}
@@ -143,25 +138,15 @@ const MyAccount = () => {
       </div>
 
       <div className="w-full bg-inPlayBgColor">
-        {activeTab === 1 && (
-          <MyProfile/>
-        )}
+        {activeTab === 1 && <MyProfile />}
 
-        {activeTab === 2 && (
-          <BalanceOverview/>
-        )}
+        {activeTab === 2 && <BalanceOverview />}
 
-        {activeTab === 3 && (
-          <AccountStatement/>
-        )}
+        {activeTab === 3 && <AccountStatement />}
 
-        {activeTab === 4 && (
-          <MyBets/>
-        )}
+        {activeTab === 4 && <MyBets />}
 
-        {activeTab === 5 && (
-          <Activity/>
-        )}
+        {activeTab === 5 && <Activity />}
       </div>
     </div>
   );
