@@ -8,6 +8,7 @@ const { upload, deleteFile } = require("./utils");
 
 // import API modules
 const usersApi = require("./apis/usersApi/usersApi");
+const homeControlApi = require("./apis/homeControlApi/homeControlApi");
 
 const port = process.env.PORT || 5000;
 
@@ -16,15 +17,11 @@ const corsConfig = {
   origin: [
     "http://localhost:5173",
     "http://localhost:5174",
-    "https://velki360.com",
-    "http://velki360.com",
-    "www.velki360.com",
-    "velki360.com",
-    "https://velki.oracleapi.net",
-    "http://velki.oracleapi.net",
-    "http://www.velki.oracleapi.net",
-    "www.velki.oracleapi.net",
-    "velki.oracleapi.net",
+    "https://capewin.com",
+    "http://capewin.com",
+    "http://www.capewin.com",
+    "www.capewin.com",
+    "capewin.com",
     "*",
   ],
   credentials: true,
@@ -49,6 +46,9 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
+
+// Serve static files from the "uploads" directory
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes for image upload and delete
 app.post("/upload", upload.single("image"), (req, res) => {
@@ -76,7 +76,6 @@ app.delete("/delete", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 // MongoDB connection and API setup
 async function run() {
   try {
@@ -84,9 +83,11 @@ async function run() {
 
     // Collections
     const usersCollection = client.db("baji").collection("users");
+    const homeControlsCollection = client.db("baji").collection("homeControls");
 
     // API routes
     app.use("/users", usersApi(usersCollection));
+    app.use("/home-controls", homeControlApi(homeControlsCollection));
 
     await client.db("admin").command({ ping: 1 });
     console.log("Connected to MongoDB!!!✅");

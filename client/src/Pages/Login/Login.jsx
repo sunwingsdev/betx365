@@ -5,20 +5,64 @@ import bkashImage from "../../assets/bkash.jpg";
 import nogodImage from "../../assets/nogod.jpg";
 import upaiImage from "../../assets/upai.jpg";
 import rocketImage from "../../assets/rocket.jpg";
+import {
+  useLazyGetAuthenticatedUserQuery,
+  useLoginUserMutation,
+} from "../../redux/features/allApis/usersApi/usersApi";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../../redux/slices/authSlice";
+import toast from "react-hot-toast";
 
 const Login = () => {
+  const [loginUser, { isLoading }] = useLoginUserMutation();
+  const [getUser] = useLazyGetAuthenticatedUserQuery();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [validCode, setValidCode] = useState("");
-  const navigate = useNavigate();
+  const [validationCode, setValidationCode] = useState(generateRandomCode());
+  const [enteredValidationCode, setEnteredValidationCode] = useState(""); // State for entered validation code
+
+  function generateRandomCode() {
+    return Math.floor(1000 + Math.random() * 9000).toString();
+  }
+
+  // Function to reset the validation code
+  const resetValidationCode = () => {
+    setValidationCode(generateRandomCode());
+    setEnteredValidationCode(""); // Clear the entered validation code on reset
+  };
 
   const images = [bkashImage, nogodImage, upaiImage, rocketImage];
+  const isValidationCodeValid = enteredValidationCode === validationCode;
 
-  const handelLogin = (e) => {
-    console.log("Username:", username);
-    console.log("Password", password);
-    console.log("Validation code", validCode);
+  const handelLogin = async () => {
+    try {
+      const { data: loginData } = await loginUser({ username, password });
+
+      if (loginData.token) {
+        const { data: userData } = await getUser(loginData.token);
+        dispatch(setCredentials({ token: loginData.token, user: userData }));
+        toast.success("Login successful", {
+          appearance: "success",
+          autoDismiss: true,
+        });
+        resetValidationCode();
+        if (userData?.role !== "admin") {
+          navigate("/");
+        } else {
+          navigate("/admindashboard");
+        }
+      }
+      // eslint-disable-next-line no-unused-vars
+    } catch (error) {
+      toast.error("Provide valid username and password", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+      resetValidationCode();
+    }
   };
   return (
     <div className="  flex flex-col bg-commonYellowColor   ">
@@ -115,18 +159,22 @@ const Login = () => {
               type="text"
               className="w-full py-1 px-2 rounded-md placeholder:text-sm "
               placeholder="Validation Code"
-              onChange={(e) => setValidCode(e.target.value)}
+              value={enteredValidationCode} // Bind to enteredValidationCode
+              onChange={(e) => setEnteredValidationCode(e.target.value)} // Update enteredValidationCode
             />
             <h3 className="text-customBlack text-lg font-bold absolute top-0 right-2">
-              4738
+              {validationCode}
             </h3>
           </div>
           <div className="text-center">
             <button
-              className="bg-signUpColor text-loginColor w-full py-1 font-bold rounded-md"
+              disabled={!isValidationCodeValid || !username || !password || isLoading}
+              className={`${
+                !isValidationCodeValid ? "opacity-70 cursor-not-allowed" : ""
+              } bg-signUpColor text-loginColor w-full py-1 font-bold rounded-md`}
               onClick={handelLogin}
             >
-              Login
+              {isLoading ? "Loading..." : 'Login'}
             </button>
           </div>
         </div>
@@ -175,9 +223,9 @@ const Login = () => {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 <path d="M22 2L11 13" />
                 <path d="M22 2L15 22 11 13 2 9z" />
@@ -192,9 +240,9 @@ const Login = () => {
                 height="auto"
                 fill="white"
                 stroke=""
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 <path d="M425.6 299.1c2.9-14.6 4.4-29.6 4.4-45 0-129.1-104.9-234-234-234-15.4 0-30.4 1.5-45 4.4C133.4 8.6 115.1 0 95.1 0 43.1 0 1 42.1 1 94.1c0 20 8.6 38.3 22.5 55.9-2.9 14.6-4.4 29.6-4.4 45 0 129.1 104.9 234 234 234 15.4 0 30.4-1.5 45-4.4 17.6 13.9 35.9 22.5 55.9 22.5 52 0 94.1-42.1 94.1-94.1 0-20-8.6-38.3-22.5-55.9zM237.1 364.9c-37.8 0-72.6-13.9-99.3-36.9-5.6-4.9-5.9-13.6-.7-19.2l20.6-20.6c4.7-4.7 12.3-5 17.5-.7 20.8 17.5 47.5 27.6 76.1 27.6 23.7 0 50.2-10.7 50.2-31.6 0-12-9.8-21.7-29.2-27.3l-51.3-14.6c-43.2-12.2-72.9-39.5-72.9-80.8 0-23.9 9.8-45.4 27.7-61.5 17.3-15.5 41.4-25.1 67.7-27V64c0-6.6 5.4-12 12-12h32.4c6.6 0 12 5.4 12 12v20.1c27.6 3.9 52 14.2 72.3 30.5 5.5 4.4 6.1 12.6 1.4 17.9l-22.9 23.9c-4.3 4.5-11.3 5-16.3 1.3-17.4-13.5-39.2-20.9-62-20.9-27.7 0-46.5 12.5-46.5 30.6 0 14.3 10.8 22.4 35.8 29.6l46.8 13.4c45.6 13 77.2 38.5 77.2 84.5-.1 49.8-43.1 88.2-107.8 88.2z" />
               </svg>
@@ -208,9 +256,9 @@ const Login = () => {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
                 <path d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z" />
@@ -219,7 +267,9 @@ const Login = () => {
             </span>
           </div>
           <div>
-            <h3 className="underline text-center text-customWhite ">000000000</h3>
+            <h3 className="underline text-center text-customWhite ">
+              000000000
+            </h3>
           </div>
         </div>
       </div>

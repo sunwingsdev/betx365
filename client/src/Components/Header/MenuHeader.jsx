@@ -17,8 +17,10 @@ const MenuHeader = () => {
   const [amounts, setAmounts] = useState([
     50, 100, 200, 500, 1000, 2000, 5000, 3000,
   ]);
-  const [selectedAmounts, setSelectedAmounts] = useState([50, 100, 200, 5000, 1000, 2000]);
-    const [editedAmounts, setEditedAmounts] = useState([...amounts]);
+  const [selectedAmounts, setSelectedAmounts] = useState([
+    50, 100, 200, 5000, 1000, 2000,
+  ]);
+  const [editedAmounts, setEditedAmounts] = useState([...amounts]);
 
   const menuItems = [
     { label: "Home", link: "/" },
@@ -27,13 +29,19 @@ const MenuHeader = () => {
     { label: "Cricket", link: "/cricket" },
     { label: "Soccer", link: "/soccer" },
     { label: "Tennis", link: "/tennis" },
-    { label: "Result", 
-      // link: "/result" 
+    {
+      label: "Result",
+      // link: "/result"
     },
     { label: "Casino", link: "/casino" },
-    { label: "Women's Premier League",
+    {
+      label: "Women's Premier League",
       //  link: "/womenleague"
-       },
+    },
+    {
+      label: "Aviator",
+      //  link: "/womenleague"
+    },
   ];
   const [showSecondButton, setShowSecondButton] = useState(false);
   const [showSecondButtonTwo, setShowSecondButtonTwo] = useState(false);
@@ -86,20 +94,20 @@ const MenuHeader = () => {
     console.log("Final Saved Amounts:", editedAmounts);
   };
   return (
-
     <div>
-        <TopHeader settingOpen={settingOpen} setSettingOpen={setSettingOpen}/>
+      <TopHeader settingOpen={settingOpen} setSettingOpen={setSettingOpen} />
       <div className="bg-commonYellowColor whitespace-nowrap   flex-row  items-center  hidden lg:flex md:hidden justify-between px-6 ">
         <ul className="flex flex-row items-center  text-xs ">
           {menuItems.map((item, index) => (
             <li
-            onClick={() => {
-              if (index === 6 || index === 8) {
-                setOpenModal(true);
-              }
-            }}
+              key={index}
+              onClick={() => {
+                if (index === 6 || index === 8) {
+                  setOpenModal(true);
+                }
+              }}
               className={`border-customBlack  border-r text-customBlack border-opacity-20 font-bold ${
-                [3, 4, 5].includes(index) ? "relative" : "null"
+                [3, 4, 5, 9].includes(index) ? "relative" : "null"
               }
 
             ${
@@ -122,7 +130,7 @@ const MenuHeader = () => {
               >
                 {item.label}
               </Link>
-              {[3, 4, 5].includes(index) && (
+              {[3, 4, 5, 9].includes(index) && (
                 <div className="absolute top-0 right-0 flex z-30 items-center ">
                   {/* Live Icon with Animation */}
                   <span className="bg-customWhite font-bold text-[8px] leading-[10px] px-1 text-liveRedColor animate-pulse  rounded-sm">
