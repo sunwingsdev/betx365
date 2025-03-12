@@ -1,4 +1,3 @@
-import blogo from "../../assets/bg.png";
 import LogoUpload from "../../Components/Dashboard/LogoUpload";
 import LogoSelection from "../../Components/Dashboard/LogoSelection";
 import SliderUploadSection from "../../Components/Dashboard/SliderUploadSection";
@@ -19,32 +18,7 @@ const HomeControl = () => {
         <div>
           <SliderUploadSection />
           <SliderSelectionSection />
-          {/* <div className="flex flex-row space-x-2">
-            <div className="relative border border-black w-2/6 h-40 my-3">
-              <img src={blogo} alt="" className="w-full h-full object-cover" />
-
-              <input
-                className="absolute top-0 left-0 w-6 h-5"
-                type="checkbox"
-                name=""
-                id=""
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                className=" absolute top-0 right-0 w-6 h-5 text-white  bg-red-500 bg- "
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </div>
-          </div> */}
+          
         </div>
         <div>
           <div className="flex flex-row px-3 items-center justify-between bg-black text-white h-12 ">

@@ -15,8 +15,6 @@ const SliderSelectionSection = () => {
   const [updateSelection] = useUpdateSelectionMutation();
   const [deleteHomeControl] = useDeleteHomeControlMutation();
 
-  console.log(isOpen);
-
   const sliderHomeControls = homeControls?.filter(
     (control) => control.category === "slider"
   );

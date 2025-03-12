@@ -84,10 +84,7 @@ const TopHeader = ({ settingOpen, setSettingOpen }) => {
       }
       // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      toast.error("Provide valid username and password", {
-        appearance: "error",
-        autoDismiss: true,
-      });
+      toast.error("Provide valid username and password");
       resetValidationCode();
     }
   };
