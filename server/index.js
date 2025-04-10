@@ -9,7 +9,7 @@ const { upload, deleteFile } = require("./utils");
 // import API modules
 const usersApi = require("./apis/usersApi/usersApi");
 const homeControlApi = require("./apis/homeControlApi/homeControlApi");
-
+const gameApi = require("./apis/gameApi/gameApi");
 const port = process.env.PORT || 5000;
 
 // CORS configuration
@@ -17,11 +17,11 @@ const corsConfig = {
   origin: [
     "http://localhost:5173",
     "http://localhost:5174",
-    "https://capewin.com",
-    "http://capewin.com",
-    "http://www.capewin.com",
-    "www.capewin.com",
-    "capewin.com",
+    "https://betxwin365.live",
+    "http://betxwin365.live",
+    "http://www.betxwin365.live",
+    "www.betxwin365.live",
+    "betxwin365.live",
     "*",
   ],
   credentials: true,
@@ -84,10 +84,12 @@ async function run() {
     // Collections
     const usersCollection = client.db("baji").collection("users");
     const homeControlsCollection = client.db("baji").collection("homeControls");
+    const gamesCollection = client.db("baji").collection("games");
 
     // API routes
     app.use("/users", usersApi(usersCollection));
     app.use("/home-controls", homeControlApi(homeControlsCollection));
+    app.use("/games", gameApi(gamesCollection));
 
     await client.db("admin").command({ ping: 1 });
     console.log("Connected to MongoDB!!!✅");

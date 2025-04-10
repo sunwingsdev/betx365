@@ -34,6 +34,7 @@ import AccountSummary from "../Components/Dashboard/AccountSummary";
 import AccountTabs from "../Components/Dashboard/AccountTabs";
 import AccountStatementTabs from "../Components/Dashboard/AccountStatementTabs";
 import Profile from "../Components/Dashboard/Profile";
+import AddGame from "../Pages/Dashboard/AddGame";
 
 const router = createBrowserRouter([
   {
@@ -96,6 +97,7 @@ const router = createBrowserRouter([
       { path: "deactivegame", element: <DeactiveGame /> },
       { path: "livegame", element: <LiveGame /> },
       { path: "usersdata/:role", element: <UsersData /> },
+      { path: "addgame", element: <AddGame /> },
     ],
   },
   { path: "/admin", element: <Banner /> },
