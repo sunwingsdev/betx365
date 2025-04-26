@@ -54,6 +54,7 @@ const gameApi = (gamesCollection) => {
     const { id } = req.params;
     const gameData = req.body;
     gameData.updatedAt = new Date();
+    gameData.column = parseInt(gameData.column) || 1;
     const query = { _id: new ObjectId(id) };
     const result = await gamesCollection.updateOne(query, { $set: gameData });
     res.send(result);

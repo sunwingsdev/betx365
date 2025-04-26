@@ -13,7 +13,7 @@ import { logout, setCredentials } from "@/redux/slices/authSlice";
 import toast from "react-hot-toast";
 import { useGetHomeControlsQuery } from "../redux/features/allApis/homeControlApi/homeControlApi";
 
-const Banner = () => {
+const MasterLogin = () => {
   const { data: homeControls } = useGetHomeControlsQuery();
   const {
     register,
@@ -49,7 +49,16 @@ const Banner = () => {
 
       if (loginData.token) {
         const { data: userData } = await getUser(loginData.token);
-        if (!userData?.role || userData?.role === "user") {
+        if (
+          userData?.status === "banned" ||
+          userData?.status === "deactivated" ||
+          userData?.status === null ||
+          userData?.status === undefined
+        ) {
+          toast.error("Your account is deactivated or banned");
+          return;
+        }
+        if (!userData?.role || userData?.role !== "master") {
           dispatch(logout());
           localStorage.removeItem("token");
           toast.error("Please login with valid credentials");
@@ -75,15 +84,15 @@ const Banner = () => {
           backgroundPosition: "center",
         }}
       >
-        <div className="flex overflow-y-auto flex-col border border-white md:flex-row lg:flex-row bg-white shadow-xl ml-10 md:ml-60 lg:ml-96 rounded-lg overflow-hidden w-3/4 md:1/3 lg:w-2/5 h-[500px] lg:h-[450px] lg:max-w-4xl mx-4">
-          <figure className="lg:w-1/2 w-full h-1/3 md:h-auto lg:h-auto">
+        <div className="flex overflow-y-auto border border-white bg-white shadow-xl rounded-lg">
+          <figure className="w-1/3 md:w-1/2">
             <img
               src={llogo}
               alt="Album"
-              className="w-full h-full object-cover"
+              className="object-cover w-full h-full md:h-[500px]"
             />
           </figure>
-          <div className="bg-black h-2/3 md:h-auto lg:h-auto pt-4 md:pt-32 lg:pt-24 lg:w-1/2 p-6">
+          <div className="md:w-1/2 w-3/2 bg-black p-1">
             <div className="flex items-center justify-center">
               <img
                 src={`${import.meta.env.VITE_BASE_API_URL}${control?.image}`}
@@ -173,4 +182,4 @@ const Banner = () => {
   );
 };
 
-export default Banner;
+export default MasterLogin;

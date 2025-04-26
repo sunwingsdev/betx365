@@ -12,10 +12,10 @@ const gameApi = baseApi.injectEndpoints({
     }),
 
     updateGame: builder.mutation({
-      query: ({ id, gameData }) => ({
+      query: ({ id, data }) => ({
         url: `/games/${id}`,
         method: "PATCH",
-        body: gameData,
+        body: data,
       }),
       invalidatesTags: ["games"],
     }),

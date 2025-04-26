@@ -1,38 +1,46 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { IoTrash } from "react-icons/io5";
+import { FaEdit } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import {
   useDeleteGameMutation,
   useGetGamesQuery,
   useToggleGameStatusMutation,
 } from "../../redux/features/allApis/gameApi/gameApi";
-import { deleteImage } from "../../hooks/files";
 import DeleteModal from "../modals/DeleteModal";
+import { deleteImage } from "../../hooks/files";
+import EditGameModal from "../modals/EditGameModal";
 
 const GameList = () => {
   const { data: games, refetch, isLoading } = useGetGamesQuery();
   const [deleteGame] = useDeleteGameMutation();
   const [toggleGameStatus] = useToggleGameStatusMutation();
-  const [isOpen, setIsOpen] = useState(false);
-  const [item, setItem] = useState(null);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const handleDeleteButtonClick = (item) => {
-    setItem(item);
-    setIsOpen(true);
+    setSelectedItem(item);
+    setIsDeleteOpen(true);
+  };
+
+  const handleEditButtonClick = (item) => {
+    setSelectedItem(item);
+    setIsEditOpen(true);
   };
 
   const handleDelete = async () => {
     try {
-      const { message } = await deleteImage(item?.image);
+      const { message } = await deleteImage(selectedItem?.image);
       if (message) {
         try {
-          const result = await deleteGame(item?._id);
+          const result = await deleteGame(selectedItem?._id);
           if (result.data.deletedCount > 0) {
             toast.success("Game deleted successfully");
             refetch();
-            setIsOpen(false);
+            setIsDeleteOpen(false);
           }
-          // eslint-disable-next-line no-unused-vars
         } catch (error) {
           toast.error("Failed to delete game");
         }
@@ -52,7 +60,6 @@ const GameList = () => {
       if (result.error) {
         toast.error(result.error.data.error);
       }
-      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       toast.error("Failed to update status");
     }
@@ -139,25 +146,14 @@ const GameList = () => {
                           </span>
                         </button>
                       )}
-                      {/* <button disabled={loadingId === game._id}>
-                        {game?.isActive ? (
-                          <IoCheckmarkCircle className="text-green-500 text-2xl" />
-                        ) : (
-                          <IoCloseCircle className="text-red-500 text-2xl" />
-                        )}
-                        <button
-                          onClick={() => handleToggleStatus(game)}
-                          className={`px-4 py-2 rounded-md text-white ${
-                            game?.isActive
-                              ? "bg-green-500 hover:bg-green-600"
-                              : "bg-red-500 hover:bg-red-600"
-                          }`}
-                        >
-                          {game?.isActive ? "Deactivate" : "Activate"}
-                        </button>
-                      </button> */}
                     </td>
-                    <td className="px-4 py-2 text-center">
+                    <td className="px-4 py-2 text-center flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => handleEditButtonClick(game)}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        <FaEdit className="text-2xl" />
+                      </button>
                       <button
                         onClick={() => handleDeleteButtonClick(game)}
                         className="text-red-600 hover:text-red-800"
@@ -174,10 +170,17 @@ const GameList = () => {
       </div>
 
       <DeleteModal
-        isOpen={isOpen}
-        closeModal={() => setIsOpen(false)}
+        isOpen={isDeleteOpen}
+        closeModal={() => setIsDeleteOpen(false)}
         handleDelete={handleDelete}
-      ></DeleteModal>
+      />
+
+      <EditGameModal
+        isOpen={isEditOpen}
+        closeModal={() => setIsEditOpen(false)}
+        game={selectedItem}
+        refetch={refetch}
+      />
     </>
   );
 };
