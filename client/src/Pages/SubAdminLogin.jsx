@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import blogo from "../assets/bg.png";
-import llogo from "../assets/logImage.jpg";
 import { IoReload } from "react-icons/io5";
 import {
   useLazyGetAuthenticatedUserQuery,
@@ -30,6 +29,9 @@ const SubAdminLogin = () => {
   const control = homeControls?.find(
     (control) => control.category === "logo" && control.isSelected
   );
+  const imageControl = homeControls?.find(
+    (control) => control.category === "admin-image" && control.isSelected
+  );
 
   function generateCode() {
     return Math.floor(1000 + Math.random() * 9000).toString();
@@ -55,7 +57,10 @@ const SubAdminLogin = () => {
           userData?.status === null ||
           userData?.status === undefined
         ) {
-          toast.error("Your account is deactivated or banned");
+          toast.error("Your account is deactivated or banned", {
+            appearance: "error",
+            autoDismiss: true,
+          });
           return;
         }
         if (!userData?.role || userData?.role !== "sub-admin") {
@@ -84,15 +89,15 @@ const SubAdminLogin = () => {
           backgroundPosition: "center",
         }}
       >
-        <div className="flex overflow-y-auto border border-white bg-white shadow-xl rounded-lg">
-          <figure className="w-1/3 md:w-1/2">
+        <div className="flex overflow-y-auto flex-col border border-white md:flex-row lg:flex-row bg-white shadow-xl ml-10 md:ml-60 lg:ml-96 rounded-lg overflow-hidden w-3/4 md:1/3 lg:w-2/5 h-[500px] lg:h-[450px] lg:max-w-4xl mx-4">
+          <figure className="lg:w-1/2 w-full h-1/3 md:h-auto lg:h-auto">
             <img
-              src={llogo}
+              src={`${import.meta.env.VITE_BASE_API_URL}${imageControl?.image}`}
               alt="Album"
-              className="object-cover w-full h-full md:h-[500px]"
+              className="w-full h-full object-cover"
             />
           </figure>
-          <div className="md:w-1/2 w-3/2 bg-black p-1">
+          <div className="bg-black h-2/3 md:h-auto lg:h-auto pt-4 md:pt-32 lg:pt-24 lg:w-1/2 p-6">
             <div className="flex items-center justify-center">
               <img
                 src={`${import.meta.env.VITE_BASE_API_URL}${control?.image}`}

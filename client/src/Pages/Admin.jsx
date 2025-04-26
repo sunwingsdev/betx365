@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import blogo from "../assets/bg.png";
-import llogo from "../assets/logImage.jpg";
 import { IoReload } from "react-icons/io5";
 import {
   useLazyGetAuthenticatedUserQuery,
@@ -29,6 +28,9 @@ const Admin = () => {
 
   const control = homeControls?.find(
     (control) => control.category === "logo" && control.isSelected
+  );
+  const imageControl = homeControls?.find(
+    (control) => control.category === "admin-image" && control.isSelected
   );
 
   function generateCode() {
@@ -90,7 +92,7 @@ const Admin = () => {
         <div className="flex overflow-y-auto flex-col border border-white md:flex-row lg:flex-row bg-white shadow-xl ml-10 md:ml-60 lg:ml-96 rounded-lg overflow-hidden w-3/4 md:1/3 lg:w-2/5 h-[500px] lg:h-[450px] lg:max-w-4xl mx-4">
           <figure className="lg:w-1/2 w-full h-1/3 md:h-auto lg:h-auto">
             <img
-              src={llogo}
+              src={`${import.meta.env.VITE_BASE_API_URL}${imageControl?.image}`}
               alt="Album"
               className="w-full h-full object-cover"
             />
