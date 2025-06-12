@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import blogo from "../assets/bg.png";
-import llogo from "../assets/logImage.jpg";
 import { IoReload } from "react-icons/io5";
 import {
   useLazyGetAuthenticatedUserQuery,
@@ -13,7 +12,7 @@ import { logout, setCredentials } from "@/redux/slices/authSlice";
 import toast from "react-hot-toast";
 import { useGetHomeControlsQuery } from "../redux/features/allApis/homeControlApi/homeControlApi";
 
-const Banner = () => {
+const MasterLogin = () => {
   const { data: homeControls } = useGetHomeControlsQuery();
   const {
     register,
@@ -29,6 +28,9 @@ const Banner = () => {
 
   const control = homeControls?.find(
     (control) => control.category === "logo" && control.isSelected
+  );
+  const imageControl = homeControls?.find(
+    (control) => control.category === "admin-image" && control.isSelected
   );
 
   function generateCode() {
@@ -49,7 +51,19 @@ const Banner = () => {
 
       if (loginData.token) {
         const { data: userData } = await getUser(loginData.token);
-        if (!userData?.role || userData?.role === "user") {
+        if (
+          userData?.status === "banned" ||
+          userData?.status === "deactivated" ||
+          userData?.status === null ||
+          userData?.status === undefined
+        ) {
+          toast.error("Your account is deactivated or banned", {
+            appearance: "error",
+            autoDismiss: true,
+          });
+          return;
+        }
+        if (!userData?.role || userData?.role !== "master") {
           dispatch(logout());
           localStorage.removeItem("token");
           toast.error("Please login with valid credentials");
@@ -78,7 +92,7 @@ const Banner = () => {
         <div className="flex overflow-y-auto flex-col border border-white md:flex-row lg:flex-row bg-white shadow-xl ml-10 md:ml-60 lg:ml-96 rounded-lg overflow-hidden w-3/4 md:1/3 lg:w-2/5 h-[500px] lg:h-[450px] lg:max-w-4xl mx-4">
           <figure className="lg:w-1/2 w-full h-1/3 md:h-auto lg:h-auto">
             <img
-              src={llogo}
+              src={`${import.meta.env.VITE_BASE_API_URL}${imageControl?.image}`}
               alt="Album"
               className="w-full h-full object-cover"
             />
@@ -173,4 +187,4 @@ const Banner = () => {
   );
 };
 
-export default Banner;
+export default MasterLogin;
