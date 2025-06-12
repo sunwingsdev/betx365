@@ -7,21 +7,47 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
   useLazyGetAuthenticatedUserQuery,
+  useLazyGetUserByIdQuery,
   useLoginUserMutation,
 } from "../../redux/features/allApis/usersApi/usersApi";
 import { useDispatch, useSelector } from "react-redux";
-import { logout, setCredentials } from "../../redux/slices/authSlice";
+import {
+  logout,
+  setCredentials,
+  setSingleUser,
+} from "../../redux/slices/authSlice";
 import { useGetHomeControlsQuery } from "../../redux/features/allApis/homeControlApi/homeControlApi";
+import RegistrationForm from "../forms/RegistrationForm";
+import { IoIosLogIn } from "react-icons/io";
+import { FaArrowUpRightFromSquare } from "react-icons/fa6";
+import { useGetColorControlsQuery } from "../../redux/features/allApis/colorControlApi/colorControlApi";
+import { FaUser } from "react-icons/fa";
 
 const TopHeader = ({ settingOpen, setSettingOpen }) => {
   const { data: homeControls } = useGetHomeControlsQuery();
-  const { user, token } = useSelector((state) => state.auth);
+  const { data: colorControls } = useGetColorControlsQuery();
+  const { user, token, singleUser } = useSelector((state) => state.auth);
   const [loginUser, { isLoading }] = useLoginUserMutation();
   const [getUser] = useLazyGetAuthenticatedUserQuery();
+  const [getSingleUser] = useLazyGetUserByIdQuery();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [validationCode, setValidationCode] = useState(generateRandomCode());
   const [enteredValidationCode, setEnteredValidationCode] = useState(""); // State for entered validation code
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const headingColorControl = colorControls?.find(
+    (colorControl) => colorControl?.section === "home-header"
+  );
+
+  useEffect(() => {
+    if (!user) return;
+    getSingleUser(user?._id).then(({ data }) => {
+      dispatch(setSingleUser(data));
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const control = homeControls?.find(
     (control) => control.category === "logo" && control.isSelected
@@ -45,15 +71,31 @@ const TopHeader = ({ settingOpen, setSettingOpen }) => {
   ];
   const profileInformation = [
     { id: 1, name: "My Profile", path: "/myaccount#1" },
-    { id: 2, name: "Balance Overview", path: "/myaccount#2" },
-    { id: 3, name: "Account Statement", path: "/myaccount#3" },
-    { id: 4, name: "My Bets", path: "/myaccount#4-1" },
-    { id: 5, name: "Bets History", path: "/myaccount#4-2" },
-    { id: 6, name: "Profit Loss", path: "/myaccount#4-3" },
-    { id: 7, name: "Activity Log", path: "/myaccount#5" },
-    { id: 8, name: "Check Sport Wise Result", path: "/result" },
-    { id: 9, name: "Balance Transfer", path: "/balancetransfer" },
+    {
+      id: 2,
+      name: "Deposit",
+      path: "/myaccount#2",
+      condition: user?.createdBy === "self",
+    },
+    {
+      id: 3,
+      name: "Withdraw",
+      path: "/myaccount#4",
+      condition: user?.createdBy === "self",
+    },
+    { id: 4, name: "Balance Overview", path: "/myaccount#6" },
+    { id: 5, name: "Account Statement", path: "/myaccount#8" },
+    { id: 6, name: "My Bets", path: "/myaccount#9" },
+    { id: 7, name: "Bets History", path: "/myaccount#5-2" },
+    { id: 8, name: "Profit Loss", path: "/myaccount#5-3" },
+    { id: 9, name: "Activity Log", path: "/myaccount#10" },
+    { id: 10, name: "Check Sport Wise Result", path: "/result" },
+    { id: 11, name: "Balance Transfer", path: "/balancetransfer" },
   ];
+
+  const filteredProfileInformation = profileInformation.filter(
+    (item) => item.condition === undefined || item.condition
+  );
 
   const [searchText, setSearchText] = useState("");
   const [myAccountOpen, setMyAccountOpen] = useState(false);
@@ -64,23 +106,46 @@ const TopHeader = ({ settingOpen, setSettingOpen }) => {
     setter(e.target.value);
   };
 
+  const reloadBalance = () => {
+    if (!user) return;
+
+    setLoading(true);
+
+    getSingleUser(user?._id)
+      .then(({ data }) => {
+        dispatch(setSingleUser(data));
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   const handelLogin = async () => {
     try {
       const { data: loginData } = await loginUser({ username, password });
 
       if (loginData.token) {
         const { data: userData } = await getUser(loginData.token);
+        if (
+          userData?.status === "banned" ||
+          userData?.status === "deactivated" ||
+          userData?.status === null ||
+          userData?.status === undefined
+        ) {
+          toast.error("Your account is deactivated or banned");
+          return;
+        }
+        if (userData?.role !== "user") {
+          toast.error("You are not allowed to login");
+          return;
+        }
         dispatch(setCredentials({ token: loginData.token, user: userData }));
         toast.success("Login successful", {
           appearance: "success",
           autoDismiss: true,
         });
         resetValidationCode();
-        if (userData?.role !== "admin") {
-          navigate("/");
-        } else {
-          navigate("/admindashboard");
-        }
+        navigate("/");
       }
       // eslint-disable-next-line no-unused-vars
     } catch (error) {
@@ -126,47 +191,58 @@ const TopHeader = ({ settingOpen, setSettingOpen }) => {
   // Check if the entered validation code matches the generated code
   const isValidationCodeValid = enteredValidationCode === validationCode;
 
+  const openRegisterModal = () => {
+    setIsRegisterModalOpen(true);
+  };
+
+  const closeRegisterModal = () => {
+    setIsRegisterModalOpen(false);
+  };
+
   return (
-    <div className="bg-topHeaderColor py-3 px-2   flex flex-row gap-2 items-center justify-between">
+    <div
+      style={{
+        backgroundImage: `linear-gradient(to ${
+          headingColorControl?.direction || "top"
+        }, ${headingColorControl?.firstBackgroundColor || "#3a3a3a"}, ${
+          headingColorControl?.secondBackgroundColor || "#000000"
+        })`,
+      }}
+      className="px-1 py-1 md:py-3 md:px-2   md:flex flex-row gap-2 items-center justify-between"
+    >
       <div className="flex flex-row items-center justify-between w-full lg:w-auto gap-2">
         {/* Logo */}
-        <div className="">
+
+        <Link to="/" className="">
           <img
             src={`${import.meta.env.VITE_BASE_API_URL}${control?.image}`}
             alt=""
-            className="w-full max-w-[100px] lg:max-w-[150px]"
+            className={`w-full max-w-[180px] ${user && "hidden lg:block"}`}
           />
+        </Link>
+
+        <div className="flex  gap-3">
+          {/* Login Button */}
+          {!user && (
+            <div className="relative lg:hidden">
+              <Link className="" to="/login">
+                <button className="bg-loginRedColor flex items-center justify-center gap-2 text-customWhite px-3 py-1 h-min rounded-sm font-medium text-sm">
+                  <FaUser className="text-base" /> Login
+                </button>
+              </Link>
+            </div>
+          )}
+          {/* Sign Up Button */}
+          {/* {!user && (
+            <button
+              // onClick={openRegisterModal}
+              className="lg:hidden bg-yellow-500 text-black px-3 py-1 whitespace-nowrap h-min font-medium text-sm flex items-center justify-center gap-1"
+            >
+              Sign Up <FaArrowUpRightFromSquare />
+            </button>
+          )} */}
         </div>
 
-        {/* Sign Up Button */}
-        {/* <button className="lg:hidden bg-signUpColor text-customWhite px-3 py-1 whitespace-nowrap h-min rounded-sm font-bold text-sm">
-          Sign Up
-        </button> */}
-
-        {/* Login Button */}
-        {!user && (
-          <div className="relative lg:hidden">
-            <Link className="" to="/login">
-              <button className="bg-loginRedColor text-customWhite px-8 py-1 h-min rounded-sm font-bold text-sm">
-                Login
-              </button>
-              <span className="absolute top-0 left-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="white"
-                  className="w-7 h-auto"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H5z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </span>
-            </Link>
-          </div>
-        )}
         <div className="relative hidden lg:flex flex-col gap-2">
           {/* Search Input */}
           <div className="relative">
@@ -285,35 +361,48 @@ const TopHeader = ({ settingOpen, setSettingOpen }) => {
 
             <div className="flex flex-row gap-1 ">
               <button
-                className={`bg-loginRedColor text-customWhite px-4 py-1 h-min rounded-md font-bold text-sm ${
+                className={`bg-loginRedColor text-customWhite px-4 py-1 h-min font-bold text-sm ${
                   !isValidationCodeValid ? "opacity-50 cursor-not-allowed" : ""
                 }`}
                 onClick={handelLogin}
                 disabled={!isValidationCodeValid || !username || !password}
               >
-                {isLoading ? "..." : "Login"}
+                {isLoading ? (
+                  "..."
+                ) : (
+                  <div className=" flex items-center justify-center gap-1">
+                    <FaUser className="text-base" /> Login
+                  </div>
+                )}
               </button>
 
-              {/* <button className="bg-signUpColor text-customWhite px-3 py-1 whitespace-nowrap h-min rounded-md font-bold text-sm ">
-                Sign Up
+              {/* <button
+                // onClick={openRegisterModal}
+                className="bg-yellow-500 text-black px-3 py-1 whitespace-nowrap h-min font-medium text-sm flex items-center justify-center gap-1"
+              >
+                Sign Up <FaArrowUpRightFromSquare />
               </button> */}
             </div>
           </div>{" "}
         </>
       ) : (
         <>
-          <div className="flex flex-row items-center justify-center  gap-1 lg:gap-2 relative">
+          <div className="flex flex-row items-center justify-center gap-1 lg:gap-2 relative">
             <div className="lg:hidden flex flex-row   text-customWhite bg-signUpColor  rounded-[4px]  p-1  items-center ">
               <span>
-                <CiDollar className="w-5 h-auto stroke-1" />
+                <CiDollar className="w-5  h-auto stroke-1" />
               </span>
 
               <h3 className="text-xs text-textYellowColor">Bet</h3>
             </div>
             <div className="flex flex-row items-center font-medium rounded-[4px]  bg-signUpColor lg:bg-none whitespace-nowrap text-[10px] lg:text-xs lg:border border-sliderButtonMediumGray text-textYellowColor  lg:text-customWhite relative">
-              <div className="flex flex-row items-center lg:py-1 hover:underline cursor-pointer  px-2   gap-2">
+              <div className="flex flex-row items-center md:py-1 hover:underline cursor-pointer  px-2 gap-0.5  md:gap-2">
                 <h3 className="">
-                  Main <span className="font-bold "> PBU 0.00</span>
+                  Main{" "}
+                  <span className="font-bold ">
+                    {" "}
+                    PBU {loading ? "..." : singleUser?.balance || 0.0}
+                  </span>
                 </h3>
                 <p className="">
                   {" "}
@@ -324,7 +413,12 @@ const TopHeader = ({ settingOpen, setSettingOpen }) => {
                 </button>
               </div>
               <span className="border-l py-[6px] lg:py-1 px-1 text-customWhite lg:text-sliderButtonMediumGray border-customBlack lg:border-sliderButtonMediumGray">
-                <IoReload className="w-4 h-auto stroke-2" />
+                <IoReload
+                  onClick={reloadBalance}
+                  className={`w-4 h-auto stroke-2 ${
+                    loading ? "animate-spin" : ""
+                  }`}
+                />
               </span>
             </div>
             <span
@@ -375,7 +469,7 @@ const TopHeader = ({ settingOpen, setSettingOpen }) => {
                       </p>
                     </div>
                   </div>
-                  {profileInformation.map((item, index) => (
+                  {filteredProfileInformation.map((item, index) => (
                     <div
                       key={index}
                       className=" border-b border-sliderButtonMediumGray"
@@ -406,6 +500,7 @@ const TopHeader = ({ settingOpen, setSettingOpen }) => {
           </div>
         </>
       )}
+      {isRegisterModalOpen && <RegistrationForm onClose={closeRegisterModal} />}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBaseball } from "react-icons/fa6";
 import { IoMdFootball } from "react-icons/io";
@@ -10,7 +10,7 @@ import TabSportsCricket from "../TabSportsCricket/TabSportsCricket";
 import TabSportsSoccer from "../TabSportsSoccer/TabSportsSoccer";
 import TabSportsTennis from "../TabSportsTennis/TabSportsTennis";
 
-const SportsHeader = ({allTabs}) => {
+const SportsHeader = ({ allTabs }) => {
   const [activeTab, setActiveTab] = useState("Cricket");
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -53,11 +53,10 @@ const SportsHeader = ({allTabs}) => {
       link: "/womenleague",
     },
   ];
-  
- 
+
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
-    console.log("Search Value:", e.target.value); 
+    console.log("Search Value:", e.target.value);
   };
   return (
     <div>
@@ -146,16 +145,10 @@ const SportsHeader = ({allTabs}) => {
       <h3 className="   bg-footer-gradient w-full   text-center  px-2 py-1 text-sm font-bold text-customWhite">
         Highlights
       </h3>
-      {activeTab === "Cricket" && (
-        <TabSportsCricket allTabs={allTabs}/>
-      )}
-      {activeTab === "Soccer" && (
-        <TabSportsSoccer allTabs={allTabs}/>
-      )}
-      
-      {activeTab === "Tennis" && (
-       <TabSportsTennis allTabs={allTabs}/>
-      )}
+      {activeTab === "Cricket" && <TabSportsCricket allTabs={allTabs} />}
+      {activeTab === "Soccer" && <TabSportsSoccer allTabs={allTabs} />}
+
+      {activeTab === "Tennis" && <TabSportsTennis allTabs={allTabs} />}
     </div>
   );
 };
